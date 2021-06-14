@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
 const cors = require('cors');
+const dotenv = require('dotenv').config()
 const port = process.env.PORT || 2007;
 app.use(cors())
 app.use(express.json())
-mongoose.connect('mongodb+srv://react:react@cluster0.ihdmj.mongodb.net/react?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB_HOST, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('mongodb connected successfully')
     })
