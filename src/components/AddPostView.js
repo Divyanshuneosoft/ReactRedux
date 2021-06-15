@@ -1,12 +1,8 @@
 import React,{useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux'
 import { TextField,Button,Grid,Container } from '@material-ui/core'
-import { postAction } from '../redux/actions/postActions';
-const AddPostView = ({submit,id}) => {
-
+const AddPostView = ({submit,updatedData}) => {
     const post = {title:'',content:'',author:''}
     const [formData,setFormData] = useState(post)
-    const dispatch = useDispatch()
     const onChange = (e)=>{
        setFormData({
            ...formData,
@@ -22,21 +18,10 @@ const AddPostView = ({submit,id}) => {
         setFormData(post)
         submit(data)
     }
-    function patchValue(data){
-        const patchData = {}
-        Object.keys(data.data).forEach(key=>{
-            if(!['_id','_v'].includes(key)) patchData[key] = data.data[key]
-        })
-        setFormData(patchData)
-    }
     useEffect(()=>{
-      if(id){
-        dispatch(postAction.getDetails(id,(data)=>{
-            patchValue(data)
-        }))
-      } 
-        
-    },[id])
+       if(updatedData) setFormData(updatedData)
+    },[updatedData])
+ 
     return (
         <Container maxWidth="xs">
         <form onSubmit={submitForm}>

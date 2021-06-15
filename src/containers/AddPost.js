@@ -5,20 +5,14 @@ import AddPostView from '../components/AddPostView';
 import { postAction } from '../redux/actions/postActions';
 
 const AddPost = (props) => {
-    const [id,setId] = useState(null)
+    const [updatedData,setUpdatedData] = useState(null)
     const history = useHistory()
-    useEffect(()=>{
-        if(props.match.params){
-            setId(props.match.params.id)
-        }
-
-    },[])
-  
+    const [id,setId] = useState(null)
+    const {getDetail} = useSelector(state=>state.postReducer)
     const dispatch = useDispatch()
     const onSubmit = (data)=>{
         if(id){
             data.id = id;
-            console.log(data)
             return dispatch(postAction.updatePost(data,()=>{
                 history.push('/')
             }))
@@ -28,8 +22,26 @@ const AddPost = (props) => {
       }))
 
     }
+    function patchValue(data){
+        const patchData = {}
+        Object.keys(data.data).forEach(key=>{
+            if(!['_id','_v'].includes(key)) patchData[key] = data.data[key]
+        })
+        setUpdatedData(patchData)
+    }
+    useEffect(()=>{
+        if(props.match.params.id){
+            setId(props.match.params.id)
+            dispatch(postAction.getDetails(props.match.params.id))
+        }
+
+    },[id])
+  
+    useEffect(()=>{
+        if(getDetail.data) patchValue(getDetail.data)
+    },[getDetail])
     return (
-        <AddPostView submit={onSubmit} id= {id}/>
+        <AddPostView submit={onSubmit} updatedData= {updatedData}/>
             
     )
 }
